@@ -1,15 +1,14 @@
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(){
-    int pot_PID;
+    int id;
     printf("Proces macierzysty: UID = %d, GID= %d, PID= %d, PGID = %d, PPID = %d \n", getuid(), getgid(), getpid(), getpgid(getpid()), getppid());
     for(int i = 0; i < 3; i++){
-        pot_PID = fork();
-        switch(pot_PID){
+        id = fork();
+        switch(id){
             case -1:
                 perror("fork error");
                 exit(1);

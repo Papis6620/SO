@@ -8,11 +8,11 @@ int main(){
     int PID = getpid();
     int PPID = getppid();
     int PGID = getpgid(PID);
-
-    printf("UID = %d \n",UID);
-    printf("GID = %d \n",GID);
-    printf("PID = %d \n",PID);
-    printf("PPID = %d \n",PPID);
-    printf("PGID = %d \n",PGID);
+    printf("Identyfikatory procesu:\n");
+    printf("UID = %d, ",UID);
+    printf("GID = %d, ",GID);
+    printf("PID = %d, ",PID);
+    printf("PPID = %d, ",PPID);
+    printf("PGID = %d\n",PGID);
     return 0;
 }
