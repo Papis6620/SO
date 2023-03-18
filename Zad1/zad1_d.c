@@ -12,13 +12,14 @@ int main(){
                 perror("fork error");
                 exit(1);
             case 0:
+                sleep(i);
                 printf("Proces potomny: UID = %d, GID= %d, PID= %d, PGID = %d, PPID = %d \n", getuid(), getgid(), getpid(), getpgid(getpid()), getppid());
-                sleep(i+1);
+                printf(" Pokolenie nr. %d \n", i+1);
                 break;
             default:
+                sleep(i+1);
                 break;
         }
     }
-    sleep(4);
     return 0;
 }
