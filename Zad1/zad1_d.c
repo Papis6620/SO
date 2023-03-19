@@ -4,7 +4,8 @@
 
 int main(){
     int id;
-    printf("Proces macierzysty: UID = %d, GID= %d, PID= %d, PGID = %d, PPID = %d \n", getuid(), getgid(), getpid(), getpgid(getpid()), getppid());
+    int pok = 0;
+    printf("Proces macierzysty: UID = %d, GID= %d, PID= %d, PGID = %d, PPID = %d \n \n", getuid(), getgid(), getpid(), getpgid(getpid()), getppid());
     for(int i = 0; i < 3; i++){
         id = fork();
         switch(id){
@@ -12,14 +13,15 @@ int main(){
                 perror("fork error");
                 exit(1);
             case 0:
-                sleep(i);
+                pok++;
+                printf("Pokolenie nr. %d\n",pok);
                 printf("Proces potomny: UID = %d, GID= %d, PID= %d, PGID = %d, PPID = %d \n", getuid(), getgid(), getpid(), getpgid(getpid()), getppid());
-                printf(" Pokolenie nr. %d \n", i+1);
+                sleep(i);
                 break;
             default:
-                sleep(i+1);
                 break;
         }
     }
+    sleep(4);
     return 0;
 }
