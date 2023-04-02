@@ -1,11 +1,11 @@
-#include <sys/wait.h>
 #include <sys/types.h>
-#include <stdio.h>
-#include <signal.h>
+#include <sys/wait.h>
 #include <unistd.h>
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
+#include <signal.h>
+#include <string.h>
+
 int main(int argc, char *argv[]){
     if(argc != 3){
         printf("Nie podano nr. sygnału i sposobu obsługi sygnału.\n");
@@ -18,34 +18,28 @@ int main(int argc, char *argv[]){
         printf("Podano nie prawidłowy sposób obsługi. Przewidywane sposoby to 1, 2 lub 3. \n");
         exit(EXIT_FAILURE);
     }
-    int id;
+    
     int wait_id;
-    id = fork();
-    switch(id){
-        case -1:
-            perror("fork error");
-            exit(1);
-        case 0:
-            execlp("./2", "2", argv[1], argv[2], (char *) NULL);
-            perror("execlp error");
-            break;
-        default:
-            sleep(2);
-            
-            if(kill(id,0) == -1){
-                perror("kill error");
-            }else{
-                kill(id, signal_number);
+    int id;
+    for(int i = 0; i < 3; i++){
+        id = fork();
+        switch(id){
+            case -1:
+                perror("fork error");
+                exit(1);
+            case 0:
+                execlp("./2", "2", argv[1], argv[2], (char *)NULL);
+                break;
+            default:
                 wait(&wait_id);
                 if (WIFEXITED(wait_id)) {
                 printf("Proces potomny zakończony normalnie. Status: %d\n", WEXITSTATUS(wait_id));
                 } else if (WIFSIGNALED(wait_id)) {
                 printf("Proces potomny zakończony sygnałem. Numer sygnału: %d, Nazwa: %s\n", WTERMSIG(wait_id), strsignal(WTERMSIG(wait_id)));
                 }
-                
-            }
-            break;
-    }  
+                break;
+        }
+    }
+    printf("PID = %d\n",getpid());
     return 0;
-    
 }

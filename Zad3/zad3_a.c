@@ -22,30 +22,32 @@ int main(int argc, char *argv[]){
     }
 
     char *signal_name = strsignal(signal_number);
-    printf("PID = %d \n", getpid());
+    printf("PID = %d, PGID = %d \n", getpid(),getpgid(getpid()));
     
     if(signal_action == 1){
-        printf("Użyto domyślnej obsługi sygnału %s\n", signal_name);
+        
         if(signal(signal_number, SIG_DFL) == SIG_ERR){
-            printf("Funkcja signal ma problem z %s \n", signal_name);
+            perror("signal error: ");
             exit(EXIT_FAILURE);
+        }else{
+            printf("Użyto domyślnej obsługi sygnału %s\n", signal_name);
         }
     }
     if(signal_action == 2){
-        printf("Użyto ignorowania sygnału %s\n", signal_name);
         if(signal(signal_number, SIG_IGN) == SIG_ERR){
-            printf("Funkcja signal ma problem z %s \n", signal_name);
+            perror("signal error: ");
             exit(EXIT_FAILURE);
+        }else{
+            printf("Użyto ignorowania sygnału %s\n", signal_name);
         }
     }
     if(signal_action == 3){
         if(signal(signal_number, custom_sighandler) == SIG_ERR){
-            printf("Funkcja signal ma problem z %s \n", signal_name);
+            perror("signal error: ");
             exit(EXIT_FAILURE);
         }
     }
-
-    pause();
+    pause();    
     return 0;
     
 }
