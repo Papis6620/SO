@@ -11,7 +11,6 @@ int main(int argc, char *argv[]){
         printf("Nie podano nr. sygnału i sposobu obsługi sygnału.\n");
         exit(EXIT_FAILURE);
     }
-    int signal_number = atoi(argv[1]);
     int signal_action = atoi(argv[2]);
 
     if(signal_action != 1 && signal_action != 2 && signal_action != 3){
