@@ -26,17 +26,17 @@ int main(int argc, char *argv[]){
             perror("fork error");
             exit(1);
         case 0:
-            execlp("./2", "2", argv[1], argv[2], (char *) NULL);
+            execlp("./zad3_a", "zad3_a", argv[1], argv[2], (char *) NULL);
             perror("execlp error");
             break;
         default:
             sleep(2);
-            
             if(kill(id,0) == -1){
                 perror("kill error");
             }else{
                 kill(id, signal_number);
-                wait(&wait_id);
+                int pid = wait(&wait_id);
+                printf("PID = %d \n", pid);
                 if (WIFEXITED(wait_id)) {
                 printf("Proces potomny zakończony normalnie. Status: %d\n", WEXITSTATUS(wait_id));
                 } else if (WIFSIGNALED(wait_id)) {

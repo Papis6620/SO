@@ -22,7 +22,6 @@ int main(int argc, char *argv[]){
     }
 
     char *signal_name = strsignal(signal_number);
-    printf("PID = %d, PGID = %d \n", getpid(),getpgid(getpid()));
     
     if(signal_action == 1){
         

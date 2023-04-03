@@ -18,8 +18,7 @@ int main(int argc, char *argv[]){
         printf("Podano nie prawidłowy sposób obsługi. Przewidywane sposoby to 1, 2 lub 3. \n");
         exit(EXIT_FAILURE);
     }
-    int id;
-    int wait_id;
+    int id, wait_id;
     id = fork();
     switch(id){
         case -1:
@@ -47,7 +46,8 @@ int main(int argc, char *argv[]){
                     sleep(1);
                     kill(-pgid, signal_number);
                 }
-                wait(&wait_id);
+                int pid = wait(&wait_id);
+                printf("PID = %d \n", pid);
                 if (WIFEXITED(wait_id)) {
                 printf("Proces potomny zakończony normalnie. Status: %d\n", WEXITSTATUS(wait_id));
                 } else if (WIFSIGNALED(wait_id)) {

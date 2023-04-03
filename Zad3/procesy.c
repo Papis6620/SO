@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     }
     
     int wait_id;
-    int id;
+    int id, pid;
     for(int i = 0; i < 3; i++){
         id = fork();
         switch(id){
@@ -28,10 +28,11 @@ int main(int argc, char *argv[]){
                 perror("fork error");
                 exit(1);
             case 0:
-                execlp("./2", "2", argv[1], argv[2], (char *)NULL);
+                execlp("./zad3_a", "zad3_a", argv[1], argv[2], (char *)NULL);
                 break;
             default:
-                wait(&wait_id);
+                pid = wait(&wait_id);
+                printf("PID = %d \n", pid);
                 if (WIFEXITED(wait_id)) {
                 printf("Proces potomny zakończony normalnie. Status: %d\n", WEXITSTATUS(wait_id));
                 } else if (WIFSIGNALED(wait_id)) {
@@ -40,6 +41,5 @@ int main(int argc, char *argv[]){
                 break;
         }
     }
-    printf("PID = %d\n",getpid());
     return 0;
 }
