@@ -9,11 +9,14 @@
 
 #define BUFFER_SIZE 10
 
-int main(){
-
+int main(int argc, char *argv[]){
+    if(argc < 2){
+        printf("Nie podano nazw plików\n");
+        exit(EXIT_FAILURE);
+    }
     int filedes[2];
     unsigned char buffer[BUFFER_SIZE];
-    int id;
+    int id, random_time;
 
     if(pipe(filedes) == -1){    //tworzenie potoku
         perror("pipe error: ");
@@ -28,48 +31,68 @@ int main(){
 
     if(id > 0){ // producent
         close(filedes[0]);
-        int plik = open("plik", O_RDONLY, 0666);
+        int plik = open(argv[1], O_RDONLY, 0666);
         int odczyt;
-        int zapis;
         if(plik == -1){
             perror("open error: ");
             exit(EXIT_FAILURE);
         }
-        while((odczyt = read(plik,buffer,BUFFER_SIZE)) > 0){
-            if((zapis = write(filedes[1], buffer, odczyt)) > 0){
-                printf("Przesłano %s (%d bajtów)\n", buffer, zapis);
-            }else if(zapis == -1){
-                perror("write error: ");
-                exit(EXIT_FAILURE);
-            }
-            memset(buffer, 0, BUFFER_SIZE);
+        do{
+        random_time = rand() % 4;
+        printf("Oczekiwano przez: %d \n", random_time + 1);
+        sleep(random_time + 1);
+        odczyt = read(plik, &buffer, BUFFER_SIZE);
+        if(odczyt == -1){
+            perror("read error: ");
+            exit(EXIT_FAILURE);
         }
+        if(write(STDOUT_FILENO, &buffer, odczyt) == -1){
+            perror("write error: ");
+            exit(EXIT_FAILURE);
+        }
+         printf(" - przesłano\n");
+        if(write(filedes[1], &buffer, odczyt) == -1){
+            perror("write error: ");
+            exit(EXIT_FAILURE);
+        }
+    }while(odczyt == BUFFER_SIZE);
         close(plik);
         close(filedes[1]);
-        wait(NULL);
 
-    }else{
+    }else{ // konsument
+        random_time = rand() % 4;
+        sleep(random_time + 1);
         close(filedes[1]);
-        int plik2 = open("output", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+        int plik2 = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0666);
         int odczyt;
-        int zapis;
         if(plik2 == -1){
             perror("open error: ");
             exit(EXIT_FAILURE);
         }
-        while((odczyt = read(filedes[0],buffer,BUFFER_SIZE)) > 0){
-            if((zapis = write(plik2, buffer, odczyt)) > 0){
-                printf("Pobrano %s (%d bajtów)\n", buffer, zapis);
-            }else if(zapis == -1){
-                perror("write error: ");
-                exit(EXIT_FAILURE);
-            }
-            memset(buffer, 0, BUFFER_SIZE);
+        do{
+        
+        odczyt = read(filedes[0], &buffer, BUFFER_SIZE);
+        if(odczyt == -1){
+            perror("read error: ");
+            exit(EXIT_FAILURE);
         }
+        
+        if(write(STDOUT_FILENO, &buffer, odczyt) == -1){
+            perror("write error: ");
+            exit(EXIT_FAILURE);
+        }else{
+            printf(" - pobrano \n");
+        }
+        
+        if(write(plik2, &buffer, odczyt) == -1){
+            perror("write error: ");
+            exit(EXIT_FAILURE);
+        }
+    }while(odczyt == BUFFER_SIZE);
         close(plik2);
         close(filedes[0]);
     }
-
+    wait(NULL);
     return 0;
 
 
