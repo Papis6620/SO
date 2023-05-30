@@ -31,13 +31,11 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-    struct mq_attr attr;
-    struct mq_attr newattr;
+    struct mq_attr attr, newattr;
+    mqd_t desk_client;
     char msg_r[MSG_LENGTH];
     char msg_s[MSG_LENGTH];
-    int a, b;
-    int result;
-    int pid;
+    int a, b, result, pid;
     char op;
     char client[20];
     newattr.mq_maxmsg = 10;
@@ -46,7 +44,6 @@ int main(){
     newattr.mq_curmsgs = 0;
 
     desk_server = q_create(SERVER_Q, &newattr);
-    mqd_t desk_client;
     desk_server = q_open(SERVER_Q, O_RDONLY);
 
     q_atr_get(desk_server, &attr);

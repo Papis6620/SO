@@ -34,10 +34,10 @@ int main(){
     }
 
     int pid = getpid();
-    struct mq_attr attr;
-    struct mq_attr newattr;
+    struct mq_attr attr, newattr;
     char msg[MSG_LENGTH];
     char string[40];
+    
     sprintf(client, "/%d", pid);
 
     newattr.mq_maxmsg = 10;
